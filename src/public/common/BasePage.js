@@ -6,8 +6,10 @@ import { externalLinks } from '../../constants';
 
 const BasePage = ({ children }) => (
   <Page
-    header={<NavBar name="Platform" />}
-    footer={<Footer externalLinks={externalLinks} />}
+    header={NavBar}
+    footer={Footer}
+    headerProps={{ name: 'Platform' }}
+    footerProps={{ externalLinks }}
   >
     <Helmet
       defaultTitle="Open Targets Platform"
