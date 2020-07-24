@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import ReactGA from 'react-ga';
 import { loader } from 'graphql.macro';
 import { Link } from 'ot-ui';
@@ -126,23 +126,40 @@ const fetchDrugs = (ensemblId, cursor, size, freeTextQuery) => {
   });
 };
 
+function reducer(state, action) {
+  switch (action.type) {
+    case 'FETCH_START':
+      return { ...state, loading: true };
+    case 'FETCH_END':
+      return { ...state, loading: false, ...action };
+    case 'NEW_PAGE':
+      return { ...state, page: action.page };
+    case 'NEW_PAGE_SIZE':
+      return { ...state, pageSize: action.pageSize };
+    default:
+      throw new Error('some error');
+  }
+}
+
+const initialState = {
+  loading: true,
+  count: 0,
+  cursor: null,
+  rows: [],
+  page: 0,
+  pageSize: 10,
+  globalFilter: '',
+};
+
 const Section = ({ ensgId }) => {
-  const [loading, setLoading] = useState(true);
-  const [count, setCount] = useState(0);
-  const [cursor, setCursor] = useState(null);
-  const [rows, setRows] = useState([]);
-  const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
-  const [globalFilter, setGlobalFilter] = useState('');
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { loading, count, cursor, rows, page, pageSize, globalFilter } = state;
 
   useEffect(
     () => {
       fetchDrugs(ensgId).then(res => {
         const { cursor, count, rows } = res.data.target.knownDrugs;
-        setLoading(false);
-        setCursor(cursor);
-        setCount(count);
-        setRows(rows);
+        dispatch({ type: 'FETCH_END', loading: false, cursor, count, rows });
       });
     },
     [ensgId]
@@ -159,52 +176,56 @@ const Section = ({ ensgId }) => {
       pageSize * newPage + pageSize > rows.length &&
       (cursor === null || cursor.length !== 0)
     ) {
-      setLoading(true);
+      dispatch({ type: 'FETCH_START' });
       fetchDrugs(ensgId, cursor, pageSize, globalFilter).then(res => {
         const { cursor, rows: newRows } = res.data.target.knownDrugs;
-        setLoading(false);
-        setCursor(cursor);
-        setPage(newPage);
-        setRows([...rows, ...newRows]);
+        dispatch({
+          type: 'FETCH_END',
+          cursor,
+          page: newPage,
+          rows: [...rows, ...newRows],
+        });
       });
     } else {
-      setPage(newPage);
+      dispatch({ type: 'NEW_PAGE', page: newPage });
     }
   };
 
-  const handleRowsPerPageChange = newPageSize => {
-    if (newPageSize > rows.length) {
-      setLoading(true);
-      fetchDrugs(ensgId, cursor, newPageSize, globalFilter).then(res => {
+  const handleRowsPerPageChange = pageSize => {
+    if (pageSize > rows.length) {
+      dispatch({ type: 'FETCH_START' });
+      fetchDrugs(ensgId, cursor, pageSize, globalFilter).then(res => {
         const { cursor, rows: newRows } = res.data.target.knownDrugs;
-        setLoading(false);
-        setCursor(cursor);
-        setPage(0);
-        setPageSize(newPageSize);
-        setRows([...rows, ...newRows]);
+        dispatch({
+          type: 'FETCH_END',
+          cursor,
+          page: 0,
+          pageSize,
+          rows: [...rows, ...newRows],
+        });
       });
     } else {
-      setPage(0);
-      setPageSize(newPageSize);
+      dispatch({ type: 'NEW_PAGE_SIZE', page: 0, pageSize: pageSize });
     }
   };
 
-  const handleGlobalFilterChange = newGlobalFilter => {
-    setLoading(true);
+  const handleGlobalFilterChange = globalFilter => {
+    dispatch({ type: 'FETCH_START' });
     ReactGA.event({
       category: 'Target Profile Page',
       action: 'Typed in knownDrugs widget search',
-      label: newGlobalFilter,
+      label: globalFilter,
     });
-    fetchDrugs(ensgId, null, pageSize, newGlobalFilter).then(res => {
-      const { cursor, count, rows: newRows = [] } =
-        res.data.target.knownDrugs ?? {};
-      setLoading(false);
-      setPage(0);
-      setCursor(cursor);
-      setCount(count);
-      setGlobalFilter(newGlobalFilter);
-      setRows(newRows);
+    fetchDrugs(ensgId, null, pageSize, globalFilter).then(res => {
+      const { cursor, count, rows = [] } = res.data.target.knownDrugs ?? {};
+      dispatch({
+        type: 'FETCH_END',
+        page: 0,
+        cursor,
+        count,
+        globalFilter,
+        rows,
+      });
     });
   };
 
