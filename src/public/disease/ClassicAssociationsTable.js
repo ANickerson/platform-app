@@ -78,6 +78,16 @@ function getRows(data, dataTypes) {
   });
 }
 
+const dataTypeOrder = [
+  'genetic_association',
+  'somatic_mutation',
+  'known_drug',
+  'affected_pathway',
+  'rna_expression',
+  'literature',
+  'animal_model',
+];
+
 const ClassicAssociationsTable = ({ efoId, dataTypes }) => {
   const theme = useTheme();
   const [page, setPage] = useState(0);
@@ -101,21 +111,38 @@ const ClassicAssociationsTable = ({ efoId, dataTypes }) => {
 
   if (error) return null;
 
-  const columns = getColumns(dataTypes, theme.palette.primary.main);
-  const rows = getRows(data?.disease.associatedTargets ?? [], dataTypes);
+  const rows = data?.disease.associatedTargets ?? [];
 
   return (
-    <Table
-      loading={loading}
-      columns={columns}
-      rows={rows}
-      rowCount={300}
-      page={page}
-      pageSize={pageSize}
-      rowsPerPageOptions={[10, 25, 100]}
-      onPageChange={handlePageChange}
-      onRowsPerPageChange={handleRowsPerPageChange}
-    />
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Overall Association Score</th>
+          <th>Genetic associations</th>
+          <th>Somatic mutations</th>
+          <th>Drugs</th>
+          <th>Pathways & systems biology</th>
+          <th>RNA expression</th>
+          <th>Text mining</th>
+          <th>Animal models</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map(row => {
+          return (
+            <tr key={row.target.id}>
+              <td>{row.target.approvedSymbol}</td>
+              <td>{row.score}</td>
+              {dataTypeOrder.map(dataType => {
+                const index = row.idPerDT.indexOf(dataType);
+                return <td key={dataType}>{row.scorePerDT[index]}</td>;
+              })}
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
   );
 };
 
