@@ -82,10 +82,21 @@ function getRows(data, dataTypes) {
   });
 }
 
+const dataTypeOrder = [
+  'genetic_association',
+  'somatic_mutation',
+  'known_drug',
+  'affected_pathway',
+  'rna_expression',
+  'literature',
+  'animal_model',
+];
+
 const ClassicAssociationsTable = ({ ensgId, dataTypes }) => {
+  console.log('dataTypes', dataTypes);
   const theme = useTheme();
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(100);
+  const [pageSize, setPageSize] = useState(5);
 
   const { loading, error, data } = useQuery(TARGET_ASSOCIATIONS_QUERY, {
     variables: {
@@ -104,22 +115,41 @@ const ClassicAssociationsTable = ({ ensgId, dataTypes }) => {
   };
 
   if (error) return null;
+  // const rows = getRows(data?.target.associatedDiseases ?? [], dataTypes);
+  const rows = data?.target.associatedDiseases ?? [];
 
-  const columns = getColumns(dataTypes, theme.palette.primary.main);
-  const rows = getRows(data?.target.associatedDiseases ?? [], dataTypes);
+  console.log('rows', rows);
 
   return (
-    <Table
-      loading={loading}
-      columns={columns}
-      rows={rows}
-      rowCount={300}
-      page={page}
-      pageSize={pageSize}
-      rowsPerPageOptions={[10, 25, 100]}
-      onPageChange={handlePageChange}
-      onRowsPerPageChange={handleRowsPerPageChange}
-    />
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Overall Association Score</th>
+          <th>Genetic associations</th>
+          <th>Somatic mutations</th>
+          <th>Drugs</th>
+          <th>Pathways & systems biology</th>
+          <th>RNA expression</th>
+          <th>Text mining</th>
+          <th>Animal models</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map(row => {
+          return (
+            <tr key={row.disease.id}>
+              <td>{row.disease.name}</td>
+              <td>{row.score}</td>
+              {dataTypeOrder.map(dataType => {
+                const index = row.idPerDT.indexOf(dataType);
+                return <td key={dataType}>{row.scorePerDT[index]}</td>;
+              })}
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
   );
 };
 
