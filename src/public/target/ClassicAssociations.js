@@ -38,7 +38,7 @@ function ClassicAssociations({ ensgId, symbol }) {
       </Grid>
       <Grid item xs={12} md={9}>
         <Card elevation={0}>
-          <CardContent>
+          <CardContent style={{ overflow: 'auto' }}>
             <ClassicAssociationsTable ensgId={ensgId} dataTypes={dataTypes} />
           </CardContent>
         </Card>

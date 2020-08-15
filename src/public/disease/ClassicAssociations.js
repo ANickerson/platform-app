@@ -37,7 +37,7 @@ function ClassicAssociations({ efoId, name }) {
       </Grid>
       <Grid item xs={12} md={9}>
         <Card elevation={0}>
-          <CardContent>
+          <CardContent style={{ overflow: 'auto' }}>
             <ClassicAssociationsTable efoId={efoId} dataTypes={dataTypes} />
           </CardContent>
         </Card>
