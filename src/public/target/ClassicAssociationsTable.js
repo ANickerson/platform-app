@@ -21,46 +21,6 @@ const TARGET_ASSOCIATIONS_QUERY = gql`
   }
 `;
 
-function getColumns(dataTypes, primaryColor) {
-  const columns = [
-    { id: 'name', slanted: true },
-    {
-      id: 'overall',
-      slanted: true,
-      renderCell: row => {
-        return (
-          <div
-            style={{
-              backgroundColor: lighten(1 - row.overall, primaryColor),
-              width: '15px',
-              height: '15px',
-            }}
-          />
-        );
-      },
-    },
-  ];
-  dataTypes.forEach(dataType => {
-    columns.push({
-      id: dataType,
-      slanted: true,
-      renderCell: row => {
-        return (
-          <div
-            style={{
-              backgroundColor: lighten(1 - row[dataType], primaryColor),
-              width: '15px',
-              height: '15px',
-            }}
-          />
-        );
-      },
-    });
-  });
-
-  return columns;
-}
-
 const dataTypeOrder = [
   'genetic_association',
   'somatic_mutation',
@@ -105,7 +65,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const ClassicAssociationsTable = ({ ensgId, dataTypes }) => {
+const ClassicAssociationsTable = ({ ensgId }) => {
   const theme = useTheme();
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(50);
