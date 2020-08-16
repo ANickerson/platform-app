@@ -61,26 +61,6 @@ function getColumns(dataTypes, primaryColor) {
   return columns;
 }
 
-function getRows(data, dataTypes) {
-  return data.map(d => {
-    const row = {
-      name: d.disease.name,
-      overall: d.score,
-    };
-
-    dataTypes.forEach(dataType => {
-      const index = d.idPerDT.indexOf(dataType);
-
-      if (index === -1) {
-        row[dataType] = 0;
-      } else {
-        row[dataType] = d.scorePerDT[index];
-      }
-    });
-    return row;
-  });
-}
-
 const dataTypeOrder = [
   'genetic_association',
   'somatic_mutation',
@@ -96,6 +76,8 @@ const useStyles = makeStyles(theme => ({
     borderCollapse: 'collapse',
   },
   rotate: {
+    position: 'sticky',
+    top: 0,
     height: '140px',
     whiteSpace: 'nowrap',
   },
