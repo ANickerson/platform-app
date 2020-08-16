@@ -32,17 +32,19 @@ const dataTypeOrder = [
 ];
 
 const useStyles = makeStyles(theme => ({
-  heatmap: {
-    borderCollapse: 'collapse',
-  },
-  rotate: {
+  header: {
+    display: 'flex',
     position: 'sticky',
     top: 0,
+  },
+  rotate: {
+    // position: 'sticky',
+    // top: 0,
     height: '140px',
     whiteSpace: 'nowrap',
   },
   headerDiv: {
-    transform: 'translate(17px, 50px) rotate(315deg)',
+    transform: 'translate(15px, 110px) rotate(315deg)',
     width: '30px',
   },
   headerSpan: {
@@ -56,9 +58,13 @@ const useStyles = makeStyles(theme => ({
   },
   nameHeader: {
     verticalAlign: 'bottom',
+    width: '250px',
+  },
+  row: {
+    display: 'flex',
   },
   name: {
-    maxWidth: '250px',
+    width: '250px',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -83,77 +89,73 @@ const ClassicAssociationsTable = ({ ensgId }) => {
   const rows = data?.target.associatedDiseases ?? [];
 
   return (
-    <table className={classes.heatmap}>
-      <thead>
-        <tr>
-          <th className={classes.nameHeader}>
-            <div>
-              <span>Name</span>
-            </div>
-          </th>
-          <th className={classes.rotate}>
-            <div className={classes.headerDiv}>
-              <span className={classes.headerSpan}>
-                Overall Association Score
-              </span>
-            </div>
-          </th>
-          <th className={classes.rotate}>
-            <div className={classes.headerDiv}>
-              <span className={classes.headerSpan}>Genetic associations</span>
-            </div>
-          </th>
-          <th className={classes.rotate}>
-            <div className={classes.headerDiv}>
-              <span className={classes.headerSpan}>Somatic mutations</span>
-            </div>
-          </th>
-          <th className={classes.rotate}>
-            <div className={classes.headerDiv}>
-              <span className={classes.headerSpan}>Drugs</span>
-            </div>
-          </th>
-          <th className={classes.rotate}>
-            <div className={classes.headerDiv}>
-              <span className={classes.headerSpan}>
-                Pathways & systems biology
-              </span>
-            </div>
-          </th>
-          <th className={classes.rotate}>
-            <div className={classes.headerDiv}>
-              <span className={classes.headerSpan}>RNA expression</span>
-            </div>
-          </th>
-          <th className={classes.rotate}>
-            <div className={classes.headerDiv}>
-              <span className={classes.headerSpan}>Text mining</span>
-            </div>
-          </th>
-          <th className={classes.rotate}>
-            <div className={classes.headerDiv}>
-              <span className={classes.headerSpan}>Animal models</span>
-            </div>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
+    <div>
+      <div className={classes.header}>
+        <div className={classes.nameHeader}>
+          <div>
+            <span>Name</span>
+          </div>
+        </div>
+        <div className={classes.rotate}>
+          <div className={classes.headerDiv}>
+            <span className={classes.headerSpan}>
+              Overall Association Score
+            </span>
+          </div>
+        </div>
+        <div className={classes.rotate}>
+          <div className={classes.headerDiv}>
+            <span className={classes.headerSpan}>Genetic associations</span>
+          </div>
+        </div>
+        <div className={classes.rotate}>
+          <div className={classes.headerDiv}>
+            <span className={classes.headerSpan}>Somatic mutations</span>
+          </div>
+        </div>
+        <div className={classes.rotate}>
+          <div className={classes.headerDiv}>
+            <span className={classes.headerSpan}>Drugs</span>
+          </div>
+        </div>
+        <div className={classes.rotate}>
+          <div className={classes.headerDiv}>
+            <span className={classes.headerSpan}>
+              Pathways & systems biology
+            </span>
+          </div>
+        </div>
+        <div className={classes.rotate}>
+          <div className={classes.headerDiv}>
+            <span className={classes.headerSpan}>RNA expression</span>
+          </div>
+        </div>
+        <div className={classes.rotate}>
+          <div className={classes.headerDiv}>
+            <span className={classes.headerSpan}>Text mining</span>
+          </div>
+        </div>
+        <div className={classes.rotate}>
+          <div className={classes.headerDiv}>
+            <span className={classes.headerSpan}>Animal models</span>
+          </div>
+        </div>
+      </div>
+      <div>
         {rows.map(row => {
           return (
-            <tr key={row.disease.id}>
-              <td>
-                <div className={classes.name}>{row.disease.name}</div>
-              </td>
-              <td className={classes.dataCell} />
+            <div key={row.disease.id} className={classes.row}>
+              <div className={classes.name}>{row.disease.name}</div>
+              <div className={classes.dataCell} />
               {dataTypeOrder.map(dataType => {
                 const index = row.idPerDT.indexOf(dataType);
-                return <td key={dataType} className={classes.dataCell} />;
+                return <div key={dataType} className={classes.dataCell} />;
               })}
-            </tr>
+            </div>
           );
         })}
-      </tbody>
-    </table>
+      </div>
+    </div>
   );
 };
 
