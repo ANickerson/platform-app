@@ -21,27 +21,31 @@ const TARGET_ASSOCIATIONS_QUERY = gql`
   }
 `;
 
-const dataTypeOrder = [
-  'genetic_association',
-  'somatic_mutation',
-  'known_drug',
-  'affected_pathway',
-  'rna_expression',
-  'literature',
-  'animal_model',
+const dataTypes = [
+  { id: 'genetic_association', label: 'Genetic associations' },
+  { id: 'somatic_mutation', label: 'Somatic mutations' },
+  { id: 'known_drug', label: 'Drugs' },
+  { id: 'affected_pathway', label: 'Pathways & systems biology' },
+  { id: 'rna_expression', label: 'RNA expression' },
+  { id: 'literature', label: 'Text mining' },
+  { id: 'animal_model', label: 'Animal models' },
 ];
 
 const useStyles = makeStyles(theme => ({
+  heatmap: {
+    width: '580px',
+    margin: '0 auto',
+  },
   header: {
     display: 'flex',
     position: 'sticky',
     top: 0,
+    backgroundColor: 'white',
   },
   rotate: {
-    // position: 'sticky',
-    // top: 0,
     height: '140px',
     whiteSpace: 'nowrap',
+    borderBottom: '1px solid #ccc',
   },
   headerDiv: {
     transform: 'translate(15px, 110px) rotate(315deg)',
@@ -51,22 +55,27 @@ const useStyles = makeStyles(theme => ({
     borderBottom: '1px solid #ccc',
     padding: '5px 10px',
   },
-  dataCell: {
+  row: {
+    display: 'flex',
+  },
+  cell: {
     width: '30px',
     border: '1px solid #ccc',
     backgroundColor: 'papayawhip',
   },
   nameHeader: {
-    verticalAlign: 'bottom',
+    alignSelf: 'flex-end',
+    paddingRight: '14px',
+    textAlign: 'end',
     width: '250px',
-  },
-  row: {
-    display: 'flex',
+    borderBottom: '1px solid #ccc',
   },
   name: {
     width: '250px',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
+    paddingRight: '14px',
+    textAlign: 'end',
     textOverflow: 'ellipsis',
   },
 }));
@@ -89,13 +98,9 @@ const ClassicAssociationsTable = ({ ensgId }) => {
   const rows = data?.target.associatedDiseases ?? [];
 
   return (
-    <div>
+    <div className={classes.heatmap}>
       <div className={classes.header}>
-        <div className={classes.nameHeader}>
-          <div>
-            <span>Name</span>
-          </div>
-        </div>
+        <div className={classes.nameHeader}>Name</div>
         <div className={classes.rotate}>
           <div className={classes.headerDiv}>
             <span className={classes.headerSpan}>
@@ -103,53 +108,25 @@ const ClassicAssociationsTable = ({ ensgId }) => {
             </span>
           </div>
         </div>
-        <div className={classes.rotate}>
-          <div className={classes.headerDiv}>
-            <span className={classes.headerSpan}>Genetic associations</span>
-          </div>
-        </div>
-        <div className={classes.rotate}>
-          <div className={classes.headerDiv}>
-            <span className={classes.headerSpan}>Somatic mutations</span>
-          </div>
-        </div>
-        <div className={classes.rotate}>
-          <div className={classes.headerDiv}>
-            <span className={classes.headerSpan}>Drugs</span>
-          </div>
-        </div>
-        <div className={classes.rotate}>
-          <div className={classes.headerDiv}>
-            <span className={classes.headerSpan}>
-              Pathways & systems biology
-            </span>
-          </div>
-        </div>
-        <div className={classes.rotate}>
-          <div className={classes.headerDiv}>
-            <span className={classes.headerSpan}>RNA expression</span>
-          </div>
-        </div>
-        <div className={classes.rotate}>
-          <div className={classes.headerDiv}>
-            <span className={classes.headerSpan}>Text mining</span>
-          </div>
-        </div>
-        <div className={classes.rotate}>
-          <div className={classes.headerDiv}>
-            <span className={classes.headerSpan}>Animal models</span>
-          </div>
-        </div>
+        {dataTypes.map(dataType => {
+          return (
+            <div key={dataType.id} className={classes.rotate}>
+              <div className={classes.headerDiv}>
+                <span className={classes.headerSpan}>{dataType.label}</span>
+              </div>
+            </div>
+          );
+        })}
       </div>
       <div>
         {rows.map(row => {
           return (
             <div key={row.disease.id} className={classes.row}>
               <div className={classes.name}>{row.disease.name}</div>
-              <div className={classes.dataCell} />
-              {dataTypeOrder.map(dataType => {
-                const index = row.idPerDT.indexOf(dataType);
-                return <div key={dataType} className={classes.dataCell} />;
+              <div className={classes.cell} />
+              {dataTypes.map(dataType => {
+                const index = row.idPerDT.indexOf(dataType.id);
+                return <div key={dataType.id} className={classes.cell} />;
               })}
             </div>
           );

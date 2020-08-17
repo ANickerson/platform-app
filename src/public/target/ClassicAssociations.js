@@ -1,11 +1,9 @@
 import React from 'react';
-import _ from 'lodash';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 
-import { client3 } from './../client';
 import ClassicAssociationsTable from './ClassicAssociationsTable';
 
 function ClassicAssociations({ ensgId, symbol }) {
