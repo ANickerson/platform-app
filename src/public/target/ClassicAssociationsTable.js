@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/client';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
+import TablePagination from '@material-ui/core/TablePagination';
 import { client3 } from './../client';
 import { lighten } from 'polished';
 
@@ -94,6 +95,14 @@ const ClassicAssociationsTable = ({ ensgId }) => {
     client: client3,
   });
 
+  const handlePageChange = (_, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleRowsPerPageChange = event => {
+    setPageSize(event.target.value);
+  };
+
   if (error) return null;
   const rows = data?.target.associatedDiseases ?? [];
 
@@ -132,6 +141,15 @@ const ClassicAssociationsTable = ({ ensgId }) => {
           );
         })}
       </div>
+      <TablePagination
+        rowsPerPageOptions={[10, 20, 50]}
+        component="div"
+        rowsPerPage={pageSize}
+        page={page}
+        count={300}
+        onChangePage={handlePageChange}
+        onChangeRowsPerPage={handleRowsPerPageChange}
+      />
     </div>
   );
 };
