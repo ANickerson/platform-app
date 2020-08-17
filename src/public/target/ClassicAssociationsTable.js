@@ -107,39 +107,41 @@ const ClassicAssociationsTable = ({ ensgId }) => {
   const rows = data?.target.associatedDiseases ?? [];
 
   return (
-    <div className={classes.heatmap}>
-      <div className={classes.header}>
-        <div className={classes.nameHeader}>Name</div>
-        <div className={classes.rotate}>
-          <div className={classes.headerDiv}>
-            <span className={classes.headerSpan}>
-              Overall Association Score
-            </span>
+    <>
+      <div className={classes.heatmap}>
+        <div className={classes.header}>
+          <div className={classes.nameHeader}>Name</div>
+          <div className={classes.rotate}>
+            <div className={classes.headerDiv}>
+              <span className={classes.headerSpan}>
+                Overall Association Score
+              </span>
+            </div>
           </div>
-        </div>
-        {dataTypes.map(dataType => {
-          return (
-            <div key={dataType.id} className={classes.rotate}>
-              <div className={classes.headerDiv}>
-                <span className={classes.headerSpan}>{dataType.label}</span>
+          {dataTypes.map(dataType => {
+            return (
+              <div key={dataType.id} className={classes.rotate}>
+                <div className={classes.headerDiv}>
+                  <span className={classes.headerSpan}>{dataType.label}</span>
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
-      <div>
-        {rows.map(row => {
-          return (
-            <div key={row.disease.id} className={classes.row}>
-              <div className={classes.name}>{row.disease.name}</div>
-              <div className={classes.cell} />
-              {dataTypes.map(dataType => {
-                const index = row.idPerDT.indexOf(dataType.id);
-                return <div key={dataType.id} className={classes.cell} />;
-              })}
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
+        <div>
+          {rows.map(row => {
+            return (
+              <div key={row.disease.id} className={classes.row}>
+                <div className={classes.name}>{row.disease.name}</div>
+                <div className={classes.cell} />
+                {dataTypes.map(dataType => {
+                  const index = row.idPerDT.indexOf(dataType.id);
+                  return <div key={dataType.id} className={classes.cell} />;
+                })}
+              </div>
+            );
+          })}
+        </div>
       </div>
       <TablePagination
         rowsPerPageOptions={[10, 20, 50]}
@@ -150,7 +152,7 @@ const ClassicAssociationsTable = ({ ensgId }) => {
         onChangePage={handlePageChange}
         onChangeRowsPerPage={handleRowsPerPageChange}
       />
-    </div>
+    </>
   );
 };
 
