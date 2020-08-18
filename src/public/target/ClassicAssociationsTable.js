@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import * as d3 from 'd3';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/client';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
@@ -21,6 +22,22 @@ const TARGET_ASSOCIATIONS_QUERY = gql`
     }
   }
 `;
+
+const color = d3
+  .scaleQuantize()
+  .domain([0, 1])
+  .range([
+    '#e8edf1',
+    '#d2dce4',
+    '#bbcbd6',
+    '#a5b9c9',
+    '#8fa8bc',
+    '#7897ae',
+    '#6285a1',
+    '#4b7493',
+    '#356386',
+    '#1f5279',
+  ]);
 
 const dataTypes = [
   { id: 'genetic_association', label: 'Genetic associations' },
@@ -62,7 +79,7 @@ const useStyles = makeStyles(theme => ({
   cell: {
     width: '30px',
     border: '1px solid #ccc',
-    backgroundColor: 'papayawhip',
+    // backgroundColor: 'papayawhip',
   },
   nameHeader: {
     alignSelf: 'flex-end',
@@ -130,13 +147,26 @@ const ClassicAssociationsTable = ({ ensgId }) => {
         </div>
         <div>
           {rows.map(row => {
+            console.log('row', row);
             return (
               <div key={row.disease.id} className={classes.row}>
                 <div className={classes.name}>{row.disease.name}</div>
-                <div className={classes.cell} />
+                <div
+                  className={classes.cell}
+                  style={{ backgroundColor: color(row.score) }}
+                />
                 {dataTypes.map(dataType => {
                   const index = row.idPerDT.indexOf(dataType.id);
-                  return <div key={dataType.id} className={classes.cell} />;
+                  const score = row.scorePerDT[index];
+                  return (
+                    <div
+                      key={dataType.id}
+                      className={classes.cell}
+                      style={{
+                        backgroundColor: index === -1 ? 'white' : color(score),
+                      }}
+                    />
+                  );
                 })}
               </div>
             );
