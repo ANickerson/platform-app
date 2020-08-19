@@ -63,14 +63,14 @@ const useStyles = makeStyles(theme => ({
   rotate: {
     height: '140px',
     whiteSpace: 'nowrap',
-    borderBottom: '1px solid #ccc',
+    borderBottom: '1px solid #eeefef',
   },
   headerDiv: {
     transform: 'translate(15px, 110px) rotate(315deg)',
     width: '30px',
   },
   headerSpan: {
-    borderBottom: '1px solid #ccc',
+    borderBottom: '1px solid #eeefef',
     padding: '5px 10px',
   },
   row: {
@@ -78,14 +78,14 @@ const useStyles = makeStyles(theme => ({
   },
   cell: {
     width: '30px',
-    border: '1px solid #ccc',
+    border: '1px solid #eeefef',
   },
   nameHeader: {
     alignSelf: 'flex-end',
     paddingRight: '14px',
     textAlign: 'end',
     width: '250px',
-    borderBottom: '1px solid #ccc',
+    borderBottom: '1px solid #eeefef',
   },
   name: {
     width: '250px',
@@ -151,13 +151,14 @@ const ClassicAssociationsTable = ({ ensgId }) => {
           {rows.map(row => {
             return (
               <div key={row.disease.id} className={classes.row}>
-                <div className={classes.name}>{row.disease.name}</div>
-                <Tooltip title={row.score.toFixed(2)} placement="top" arrow>
-                  <div
-                    className={classNames(classes.cell, classes.overallScore)}
-                    style={{ backgroundColor: color(row.score) }}
-                  />
-                </Tooltip>
+                <div className={classes.name} title={row.disease.name}>
+                  {row.disease.name}
+                </div>
+                <div
+                  className={classNames(classes.cell, classes.overallScore)}
+                  title={row.score.toFixed(2)}
+                  style={{ backgroundColor: color(row.score) }}
+                />
                 {dataTypes.map(dataType => {
                   const index = row.idPerDT.indexOf(dataType.id);
                   const score = row.scorePerDT[index];
@@ -165,6 +166,7 @@ const ClassicAssociationsTable = ({ ensgId }) => {
                     <div
                       key={dataType.id}
                       className={classes.cell}
+                      title={index === -1 ? 'no data' : score.toFixed(2)}
                       style={{
                         backgroundColor: index === -1 ? 'white' : color(score),
                       }}
