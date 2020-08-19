@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
+import classNames from 'classnames';
 import * as d3 from 'd3';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/client';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
-import TablePagination from '@material-ui/core/TablePagination';
+import { Tooltip, TablePagination } from '@material-ui/core';
 import { client3 } from './../client';
-import { lighten } from 'polished';
 
 const TARGET_ASSOCIATIONS_QUERY = gql`
   query TargetAssociationsQuery($ensemblId: String!, $page: Pagination!) {
@@ -79,7 +79,6 @@ const useStyles = makeStyles(theme => ({
   cell: {
     width: '30px',
     border: '1px solid #ccc',
-    // backgroundColor: 'papayawhip',
   },
   nameHeader: {
     alignSelf: 'flex-end',
@@ -95,6 +94,9 @@ const useStyles = makeStyles(theme => ({
     paddingRight: '14px',
     textAlign: 'end',
     textOverflow: 'ellipsis',
+  },
+  overallScore: {
+    marginRight: '10px',
   },
 }));
 
@@ -128,7 +130,7 @@ const ClassicAssociationsTable = ({ ensgId }) => {
       <div className={classes.heatmap}>
         <div className={classes.header}>
           <div className={classes.nameHeader}>Name</div>
-          <div className={classes.rotate}>
+          <div className={classNames(classes.rotate, classes.overallScore)}>
             <div className={classes.headerDiv}>
               <span className={classes.headerSpan}>
                 Overall Association Score
@@ -147,14 +149,15 @@ const ClassicAssociationsTable = ({ ensgId }) => {
         </div>
         <div>
           {rows.map(row => {
-            console.log('row', row);
             return (
               <div key={row.disease.id} className={classes.row}>
                 <div className={classes.name}>{row.disease.name}</div>
-                <div
-                  className={classes.cell}
-                  style={{ backgroundColor: color(row.score) }}
-                />
+                <Tooltip title={row.score.toFixed(2)} placement="top" arrow>
+                  <div
+                    className={classNames(classes.cell, classes.overallScore)}
+                    style={{ backgroundColor: color(row.score) }}
+                  />
+                </Tooltip>
                 {dataTypes.map(dataType => {
                   const index = row.idPerDT.indexOf(dataType.id);
                   const score = row.scorePerDT[index];
