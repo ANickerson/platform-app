@@ -3,8 +3,8 @@ import classNames from 'classnames';
 import * as d3 from 'd3';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/client';
-import { useTheme, makeStyles } from '@material-ui/core/styles';
-import { Tooltip, TablePagination } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { TablePagination } from '@material-ui/core';
 import { client3 } from './../client';
 
 const TARGET_ASSOCIATIONS_QUERY = gql`
@@ -49,7 +49,7 @@ const dataTypes = [
   { id: 'animal_model', label: 'Animal models' },
 ];
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   heatmap: {
     width: '580px',
     margin: '0 auto',
@@ -101,7 +101,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ClassicAssociationsTable = ({ ensgId }) => {
-  const theme = useTheme();
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(50);
   const classes = useStyles();
@@ -166,7 +165,7 @@ const ClassicAssociationsTable = ({ ensgId }) => {
                     <div
                       key={dataType.id}
                       className={classes.cell}
-                      title={index === -1 ? 'no data' : score.toFixed(2)}
+                      title={index === -1 ? 'No data' : score.toFixed(2)}
                       style={{
                         backgroundColor: index === -1 ? 'white' : color(score),
                       }}
@@ -179,11 +178,11 @@ const ClassicAssociationsTable = ({ ensgId }) => {
         </div>
       </div>
       <TablePagination
-        rowsPerPageOptions={[10, 20, 50]}
+        rowsPerPageOptions={[10, 50, 200, 500]}
         component="div"
         rowsPerPage={pageSize}
         page={page}
-        count={300}
+        count={600}
         onChangePage={handlePageChange}
         onChangeRowsPerPage={handleRowsPerPageChange}
       />
