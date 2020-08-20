@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import gql from 'graphql-tag';
+import * as d3 from 'd3';
 import { useQuery } from '@apollo/client';
 import { useTheme } from '@material-ui/core/styles';
 import { client3 } from './../client';
@@ -47,7 +48,7 @@ function getColumns(dataTypes, primaryColor) {
         return (
           <div
             style={{
-              backgroundColor: lighten(1 - row.overall, primaryColor),
+              backgroundColor: color(row.overall),
               width: '30px',
               height: '18px',
               border: '2px solid #eeefef',
@@ -65,7 +66,7 @@ function getColumns(dataTypes, primaryColor) {
         return (
           <div
             style={{
-              backgroundColor: lighten(1 - row[dataType], primaryColor),
+              backgroundColor: row[dataType] ? color(row[dataType]) : 'white',
               width: '30px',
               height: '18px',
               border: '2px solid #eeefef',
@@ -92,9 +93,12 @@ function getRows(data, dataTypes) {
     dataTypes.forEach(dataType => {
       const index = d.idPerDT.indexOf(dataType);
 
-      if (index === -1) {
-        row[dataType] = 0;
-      } else {
+      // if (index === -1) {
+      //   row[dataType] = 0;
+      // } else {
+      //   row[dataType] = d.scorePerDT[index];
+      // }
+      if (index !== -1) {
         row[dataType] = d.scorePerDT[index];
       }
     });
@@ -102,10 +106,26 @@ function getRows(data, dataTypes) {
   });
 }
 
+const color = d3
+  .scaleQuantize()
+  .domain([0, 1])
+  .range([
+    '#e8edf1',
+    '#d2dce4',
+    '#bbcbd6',
+    '#a5b9c9',
+    '#8fa8bc',
+    '#7897ae',
+    '#6285a1',
+    '#4b7493',
+    '#356386',
+    '#1f5279',
+  ]);
+
 const ClassicAssociationsTable = ({ ensgId, dataTypes }) => {
   const theme = useTheme();
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(100);
+  const [pageSize, setPageSize] = useState(50);
 
   const { loading, error, data } = useQuery(TARGET_ASSOCIATIONS_QUERY, {
     variables: {
@@ -133,7 +153,7 @@ const ClassicAssociationsTable = ({ ensgId, dataTypes }) => {
       loading={loading}
       columns={columns}
       rows={rows}
-      rowCount={300}
+      rowCount={600}
       page={page}
       pageSize={pageSize}
       rowsPerPageOptions={[10, 50, 200, 500]}
