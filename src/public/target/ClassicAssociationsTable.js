@@ -24,7 +24,22 @@ const TARGET_ASSOCIATIONS_QUERY = gql`
 
 function getColumns(dataTypes, primaryColor) {
   const columns = [
-    { id: 'name', slanted: true },
+    {
+      id: 'name',
+      renderCell: row => {
+        return (
+          <div
+            style={{
+              width: '150px',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {row.name}
+          </div>
+        );
+      },
+    },
     {
       id: 'overall',
       slanted: true,
@@ -33,8 +48,9 @@ function getColumns(dataTypes, primaryColor) {
           <div
             style={{
               backgroundColor: lighten(1 - row.overall, primaryColor),
-              width: '15px',
-              height: '15px',
+              width: '30px',
+              height: '18px',
+              border: '2px solid #eeefef',
             }}
           />
         );
@@ -50,8 +66,9 @@ function getColumns(dataTypes, primaryColor) {
           <div
             style={{
               backgroundColor: lighten(1 - row[dataType], primaryColor),
-              width: '15px',
-              height: '15px',
+              width: '30px',
+              height: '18px',
+              border: '2px solid #eeefef',
             }}
           />
         );
@@ -67,6 +84,9 @@ function getRows(data, dataTypes) {
     const row = {
       name: d.disease.name,
       overall: d.score,
+      rowStyle: {
+        width: '30px',
+      },
     };
 
     dataTypes.forEach(dataType => {
@@ -116,7 +136,7 @@ const ClassicAssociationsTable = ({ ensgId, dataTypes }) => {
       rowCount={300}
       page={page}
       pageSize={pageSize}
-      rowsPerPageOptions={[10, 25, 100]}
+      rowsPerPageOptions={[10, 50, 200, 500]}
       onPageChange={handlePageChange}
       onRowsPerPageChange={handleRowsPerPageChange}
     />

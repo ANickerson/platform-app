@@ -29,7 +29,11 @@ function TableRow({ columns, hover, isFixedRow, noWrap, row, style }) {
             }}
             component={column.sticky ? 'th' : 'td'}
             key={index}
-            style={{ ...column.style, ...row.rowStyle, ...style }}
+            style={{
+              ...column.style,
+              ...row.rowStyle,
+              ...style,
+            }}
           >
             {column.renderCell
               ? column.renderCell(row)

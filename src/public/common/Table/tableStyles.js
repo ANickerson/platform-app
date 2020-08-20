@@ -78,14 +78,15 @@ export const tableStyles = makeStyles(theme => ({
     top: '6px',
   },
   slantedHeader: {
-    textAlign: 'center',
-    height: '100px',
+    height: '140px',
   },
-  slanted: {
-    display: 'inline-block',
-    transform: 'rotate(315deg)',
-    whiteSpace: 'normal',
-    width: '100px',
+  slantedDiv: {
+    transform: 'translate(25px, 51px) rotate(315deg)',
+    width: '30px',
+  },
+  slantedSpan: {
+    borderBottom: '1px solid #ccc',
+    padding: '5px 10px',
   },
 }));
 

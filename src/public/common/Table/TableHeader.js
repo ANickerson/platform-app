@@ -45,26 +45,28 @@ function HeaderCell({
   };
 
   const labelInnerComponent = (
-    <span className={classNames({ [classes.slanted]: slanted })}>
-      {tooltip ? (
-        <Badge
-          badgeContent={
-            <Tooltip
-              interactive
-              placement="top"
-              classes={tooltipClasses}
-              title={tooltip}
-            >
-              <TooltipIcon className={classes.tooltipIcon} />
-            </Tooltip>
-          }
-        >
-          {label}
-        </Badge>
-      ) : (
-        label
-      )}
-    </span>
+    <div className={classNames({ [classes.slantedDiv]: slanted })}>
+      <span className={classNames({ [classes.slantedSpan]: slanted })}>
+        {tooltip ? (
+          <Badge
+            badgeContent={
+              <Tooltip
+                interactive
+                placement="top"
+                classes={tooltipClasses}
+                title={tooltip}
+              >
+                <TooltipIcon className={classes.tooltipIcon} />
+              </Tooltip>
+            }
+          >
+            {label}
+          </Badge>
+        ) : (
+          label
+        )}
+      </span>
+    </div>
   );
 
   return (
